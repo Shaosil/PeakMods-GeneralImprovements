@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Configurations>Debug;Release;Deploy</Configurations>
+        <PackageDir>..\PACKAGED\$(MSBuildProjectName)</PackageDir>
+        <GamePath>E:\Steam Games\steamapps\common\PEAK\BepInEx\plugins\ShaosilGaming-GeneralImprovements\</GamePath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy|AnyCPU'">
+      <Optimize>True</Optimize>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Assembly-CSharp">
+        <HintPath>DLLs\Assembly-CSharp.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine">
+        <HintPath>DLLs\UnityEngine.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.CoreModule">
+        <HintPath>DLLs\UnityEngine.CoreModule.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.PhysicsModule">
+        <HintPath>DLLs\UnityEngine.PhysicsModule.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <Target Name="CopyFilesToGamePath" AfterTargets="PostBuildEvent">
+        <MakeDir Directories="$(GamePath)" />
+        
+        <Message Text="Copying DLL to $(GamePath)..." Importance="high" />
+        <Exec Command="copy $(TargetPath) &quot;$(GamePath)&quot;" />
+    </Target>
+
+    <Target Name="ZipMod" AfterTargets="PostBuildEvent" Condition="$(Configuration) == 'Deploy'">
+        <Message Text="Deleting $(PackageDir)..." Importance="high" />
+        <RemoveDir Directories="$(PackageDir)" />
+
+        <Message Text="Copying mod files to $(PackageDir)..." Importance="high" />
+        <Copy SourceFiles="$(TargetPath);icon.png;manifest.json;CHANGELOG.md;README.md" DestinationFolder="$(PackageDir)" />
+
+        <ZipDirectory SourceDirectory="$(PackageDir)" DestinationFile="..\PACKAGED\$(MSBuildProjectName).zip" Overwrite="true" />
+    </Target>
+
+</Project>

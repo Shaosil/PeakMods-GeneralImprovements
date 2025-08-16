@@ -1,0 +1,9 @@
+{
+    "name": "GeneralImprovements",
+    "version_number": "1.0.0",
+    "website_url": "https://github.com/Shaosil/PeakMods-GeneralImprovements",
+    "description": "Fixes many bugs and adds many QoL improvements and optional tweaks. Very configurable.",
+    "dependencies": [
+        "BepInEx-BepInExPack_PEAK-5.4.75301"
+    ]
+}
