@@ -1,0 +1,80 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Configurations>Debug;Release;Deploy</Configurations>
+        <PackageDir>..\PACKAGED\$(MSBuildProjectName)</PackageDir>
+        <GamePath>E:\Steam Games\steamapps\common\PEAK\BepInEx\plugins\ShaosilGaming-PeakGeneralImprovements\</GamePath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy|AnyCPU'">
+        <Optimize>True</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' != 'Deploy|AnyCPU'">
+        <DefineConstants>ENABLE_CHEATMODE</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+        <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Assembly-CSharp">
+          <HintPath>DLLs\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="PhotonRealtime">
+          <HintPath>DLLs\PhotonRealtime.dll</HintPath>
+        </Reference>
+        <Reference Include="PhotonUnityNetworking">
+            <HintPath>DLLs\PhotonUnityNetworking.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>DLLs\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AudioModule">
+            <HintPath>DLLs\UnityEngine.AudioModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>DLLs\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>DLLs\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>DLLs\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="Zorro.Core.Runtime">
+          <HintPath>DLLs\Zorro.Core.Runtime.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Publicize Include="Assembly-CSharp:Character.infiniteStam" />
+        <Publicize Include="Assembly-CSharp:Character.WarpPlayer" />
+        <Publicize Include="Assembly-CSharp:CharacterData.isInvincible" />
+        <Publicize Include="Assembly-CSharp:CharacterMovement.maxAngle" />
+    </ItemGroup>
+
+    <Target Name="CopyFilesToGamePath" AfterTargets="PostBuildEvent">
+        <MakeDir Directories="$(GamePath)" />
+
+        <Message Text="Copying DLL to $(GamePath)..." Importance="high" />
+        <Exec Command="copy $(TargetPath) &quot;$(GamePath)&quot;" />
+    </Target>
+
+    <Target Name="ZipMod" AfterTargets="PostBuildEvent" Condition="$(Configuration) == 'Deploy'">
+        <Message Text="Deleting $(PackageDir)..." Importance="high" />
+        <RemoveDir Directories="$(PackageDir)" />
+
+        <Message Text="Copying mod files to $(PackageDir)..." Importance="high" />
+        <Copy SourceFiles="$(TargetPath);icon.png;manifest.json;CHANGELOG.md;README.md" DestinationFolder="$(PackageDir)" />
+
+        <ZipDirectory SourceDirectory="$(PackageDir)" DestinationFile="..\PACKAGED\$(MSBuildProjectName).zip" Overwrite="true" />
+    </Target>
+
+</Project>

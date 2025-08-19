@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using UnityEngine;
 
-namespace GeneralImprovements.Patches
+namespace PeakGeneralImprovements.Patches
 {
     internal static class CharacterItemsPatch
     {
