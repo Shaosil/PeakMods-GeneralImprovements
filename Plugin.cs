@@ -77,7 +77,7 @@ namespace PeakGeneralImprovements
             PlayFogRisesSoundEachTime = Config.Bind(GUISection, nameof(PlayFogRisesSoundEachTime), true, "If set to true, the 'Fog Rises' sound effect will be played on all zones, not just the shore.");
 
             // Inventory
-            BringPassportToIsland = Config.Bind(InventorySection, nameof(BringPassportToIsland), true, "If set to true, you will start on the island holding your passport. Useful when skipping airport.");
+            BringPassportToIsland = Config.Bind(InventorySection, nameof(BringPassportToIsland), false, "If set to true, you will start on the island holding your passport. Useful when skipping airport.");
 
             // Menu
             SkipAirportLobby = Config.Bind(MenuSection, nameof(SkipAirportLobby), false, "If set to true, clicking Host Game or Play Offline will go directly to the island, bypassing the airport.");

@@ -3,7 +3,7 @@
 ### v1.0.2 - Bugfixes and improvements
 * Fixed the `DisableFogTimer` setting showing up as `FogSetting` in the config.
 * Fixed a bug where errors would spam the log after returning to airport if `CampfiresPreventHunger` was set to true.
-* Added an option (defaults to AllowClimbing) to change the behavior of ropes/vines/chains. Options:
+* Added an option (defaults to `AllowClimbing`) to change the behavior of ropes/vines/chains. Options:
 	* `Vanilla` - Unchanged gameplay
 	* `AllowClimbing` - Allows player to climb on to another surface without first jumping
 	* `AutoDismount`- Will also automatically get off and attempt to start climbing at the end
