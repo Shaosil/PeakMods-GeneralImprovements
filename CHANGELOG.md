@@ -1,5 +1,18 @@
 # Changelog
 
+### v1.0.2 - Bugfixes and improvements
+* Fixed the `DisableFogTimer` setting showing up as `FogSetting` in the config.
+* Fixed a bug where errors would spam the log after returning to airport if `CampfiresPreventHunger` was set to true.
+* Added an option (defaults to AllowClimbing) to change the behavior of ropes/vines/chains. Options:
+	* `Vanilla` - Unchanged gameplay
+	* `AllowClimbing` - Allows player to climb on to another surface without first jumping
+	* `AutoDismount`- Will also automatically get off and attempt to start climbing at the end
+* Added `SkipAirportLobby` as an option (defaults to false). If set to true, starting any game will launch directly into the island of the day, bypassing the airport lobby entirely.
+* Added `SkipAirportUsesAscent` as an option (defaults to empty). If specified as a number, AND using `SkipAirportLobby`, the game will use your specified ascent. Must be between -1 and your max unlocked ascent.
+* Added `BringPassportToIsland` as an option (defaults to false). If set to true, you will wake up on the island holding your passport. Useful when skipping the airport.
+	* The passport will now also be droppable and throwable, but to prevent other unmodded clients from picking it up and getting stuck with it, they will immediately be forced to drop it when picking it up.
+* Moved `SkipPretitleScreen` from GUI to Menu section in the config.
+
 ### v1.0.1 - More fog and campfire options
 * Added an option (defaults to false) to skip the pre-title screen.
 * Added an option (defaults to true) to play the fog rising sound effect on every level, not just the shore.

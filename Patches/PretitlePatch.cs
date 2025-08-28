@@ -14,6 +14,9 @@ namespace PeakGeneralImprovements.Patches
                 Plugin.MLS.LogMessage("Skipping pre-title screen.");
                 SceneManager.LoadScene("Title", LoadSceneMode.Single);
             }
+
+            // Late initialize things that rely on achievements
+            Plugin.LateSanitize();
         }
     }
 }

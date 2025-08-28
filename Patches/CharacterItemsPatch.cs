@@ -4,12 +4,15 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using Photon.Pun;
 using UnityEngine;
 
 namespace PeakGeneralImprovements.Patches
 {
     internal static class CharacterItemsPatch
     {
+        public static Guid OurPassportGuid = Guid.Empty;
+
         [HarmonyPatch(typeof(CharacterItems), "DoDropping")]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> DoDropping_Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -59,6 +62,35 @@ namespace PeakGeneralImprovements.Patches
             }
 
             return matcher.InstructionEnumeration();
+        }
+
+        [HarmonyPatch(typeof(CharacterItems), nameof(AttachItem))]
+        [HarmonyPostfix]
+        private static void AttachItem(CharacterItems __instance, Character ___character, Item item)
+        {
+            if (Plugin.BringPassportToIsland.Value && item.TryGetComponent<Action_Passport>(out _))
+            {
+                // If this is the first time we're holding a passport, store it as our own
+                if (___character.IsLocal && OurPassportGuid == Guid.Empty)
+                {
+                    Plugin.MLS.LogDebug($"Holding passport for first time. Storing GUID {item.data.guid} as our own.");
+                    OurPassportGuid = item.data.guid;
+                }
+                // If someone else picks up our passport, force them to drop it
+                else if (!___character.IsLocal && item.data.guid == OurPassportGuid)
+                {
+                    Plugin.MLS.LogInfo($"Player {___character.characterName} picked up our passport, forcing them to drop it.");
+                    __instance.photonView.RPC(nameof(CharacterItems.DropItemRpc), RpcTarget.All, new object[]
+                    {
+                        (float)0, // throwChargeLevel
+                        __instance.currentSelectedSlot.Value, // slotID
+                        item.transform.position, // spawnPos
+                        item.rig.linearVelocity, // velocity
+                        item.transform.rotation, // rotation
+                        ___character.player.GetItemSlot(__instance.currentSelectedSlot.Value).data // itemInstanceData
+                    });
+                }
+            }
         }
     }
 }

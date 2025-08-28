@@ -5,10 +5,12 @@ namespace PeakGeneralImprovements.Patches
 {
     internal static class MapHandlerPatch
     {
-        [HarmonyPatch(typeof(MapHandler), nameof(Awake))]
+        [HarmonyPatch(typeof(MapHandler), "Awake")]
+        [HarmonyPatch(typeof(MapHandler), nameof(MapHandler.OnDestroy))]
         [HarmonyPostfix]
-        private static void Awake()
+        private static void AwakeAndDestroy()
         {
+            // Reset AllCampfires variable on awake and destroy of map handler
             CampfirePatch.AllCampfires = new HashSet<Campfire>();
         }
     }

@@ -15,7 +15,7 @@ namespace PeakGeneralImprovements.Patches
             // If configured, being close to any campfire should prevent hunger
             if (Plugin.CampfiresPreventHunger.Value && __instance.character.IsLocal && statusType == CharacterAfflictions.STATUSTYPE.Hunger && amount > 0)
             {
-                bool shouldApplyHunger = CampfirePatch.AllCampfires.All(c => Vector3.Distance(c.transform.position, __instance.character.Center) > 30);
+                bool shouldApplyHunger = CampfirePatch.AllCampfires.All(c => c?.transform == null ? true : Vector3.Distance(c.transform.position, __instance.character.Center) > 30);
                 if (!shouldApplyHunger)
                 {
                     _hungerSkipLogCountdown -= Time.deltaTime;

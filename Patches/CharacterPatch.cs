@@ -50,10 +50,10 @@ namespace PeakGeneralImprovements.Patches
 
                 if (Input.GetKeyDown(KeyCode.F2))
                 {
-                    if (CampfirePatch.CurrentFarthest?.transform.parent != null)
+                    if (CampfirePatch.CurrentFarthest?.transform != null)
                     {
                         var offset = new Vector3(UnityEngine.Random.Range(2, 5), 0, UnityEngine.Random.Range(2, 5));
-                        var newPos = CampfirePatch.CurrentFarthest.transform.parent.position + offset;
+                        var newPos = CampfirePatch.CurrentFarthest.transform.position + offset;
                         __instance.photonView.RPC(nameof(Character.WarpPlayerRPC), RpcTarget.All, new object[] { newPos, true });
 
                         Plugin.MLS.LogError("TELEPORTED TO FARTHEST CAMPFIRE!");
@@ -64,6 +64,13 @@ namespace PeakGeneralImprovements.Patches
                     }
                 }
             }
+        }
+
+        [HarmonyPatch(typeof(Character), nameof(Fall))]
+        [HarmonyPrefix]
+        private static bool Fall()
+        {
+            return !_cheatsEnabled;
         }
 #endif
     }

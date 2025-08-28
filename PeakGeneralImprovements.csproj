@@ -27,11 +27,17 @@
         <Reference Include="Assembly-CSharp">
           <HintPath>DLLs\Assembly-CSharp.dll</HintPath>
         </Reference>
+        <Reference Include="com.rlabrecque.steamworks.net">
+          <HintPath>DLLs\com.rlabrecque.steamworks.net.dll</HintPath>
+        </Reference>
         <Reference Include="PhotonRealtime">
           <HintPath>DLLs\PhotonRealtime.dll</HintPath>
         </Reference>
         <Reference Include="PhotonUnityNetworking">
             <HintPath>DLLs\PhotonUnityNetworking.dll</HintPath>
+        </Reference>
+        <Reference Include="Sirenix.Serialization">
+          <HintPath>DLLs\Sirenix.Serialization.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine">
             <HintPath>DLLs\UnityEngine.dll</HintPath>
@@ -54,9 +60,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Publicize Include="BepInEx:BepInEx.Configuration.ConfigFile.OrphanedEntries" />
         <Publicize Include="Assembly-CSharp:Character.infiniteStam" />
         <Publicize Include="Assembly-CSharp:Character.WarpPlayer" />
+        <Publicize Include="Assembly-CSharp:CharacterClimbing.TryToStartWallClimb" />
         <Publicize Include="Assembly-CSharp:CharacterData.isInvincible" />
+        <Publicize Include="Assembly-CSharp:CharacterItems.SpawnItemInHand" />
         <Publicize Include="Assembly-CSharp:CharacterMovement.maxAngle" />
     </ItemGroup>
 
