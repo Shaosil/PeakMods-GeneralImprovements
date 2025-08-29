@@ -11,7 +11,7 @@ namespace PeakGeneralImprovements.Patches
 {
     internal static class CharacterItemsPatch
     {
-        public static Guid OurPassportGuid = Guid.Empty;
+        internal static Guid OurPassportGuid = Guid.Empty;
 
         [HarmonyPatch(typeof(CharacterItems), "DoDropping")]
         [HarmonyTranspiler]

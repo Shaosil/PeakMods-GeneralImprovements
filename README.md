@@ -18,3 +18,6 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 
 ### BUGFIXES:
 * Fixes being able to accidentally drop items through terrain.
+* Fixes certain object's culling distance checks not working when spectating another player.
+* Items that have been fully cooked in lava will now be automatically destroyed to prevent infinite cooking and log spam. (Modded host only)
+* The climbing wall rope at the airport will now work every time the scene loads, instead of only the first time.
