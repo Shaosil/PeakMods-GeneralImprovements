@@ -3,7 +3,7 @@
 ### v1.0.4 - Minor game bugfixes
 * Fixed a bug where manually culled items (like the flowers on the peak) did not take spectated players into account.
 * Items that fully cooked in lava will now be automatically destroyed (by a modded host only) to prevent infinite cooking and log spam.
-* Fixed the airport climbing wall rope only appearing the first time you start a new game (subsequent airpot loads would result in no rope).
+* Fixed the airport climbing wall rope only appearing the first time you start a new game (subsequent airport loads would result in no rope).
 
 ### v1.0.3 - Hotfix and new option
 * Tweaked the auto dismount behavior to more accurately dismount when on certain sides of vines.
