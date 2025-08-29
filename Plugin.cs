@@ -21,19 +21,27 @@ namespace PeakGeneralImprovements
         private const string CampfireSection = "Campfire";
         public static ConfigEntry<bool> CampfiresPreventHunger { get; private set; }
 
+
         private const string ClimbingSection = "Climbing";
         public static ConfigEntry<eRopeVineChainOptions> RopeVineChainBehavior { get; private set; }
 
+
         private const string FogSection = "Fog";
         public static ConfigEntry<bool> DisableFogTimer { get; private set; }
+
+
+        private const string GameplaySection = "Gameplay";
+        public static ConfigEntry<bool> SpawnMissingPropsOnLateJoins { get; private set; }
 
 
         private const string GUISection = "GUI";
         public static ConfigEntry<bool> PlayFogRisesSoundEachTime { get; private set; }
         public static ConfigEntry<bool> SkipPretitleScreen { get; private set; }
 
+
         private const string InventorySection = "Inventory";
         public static ConfigEntry<bool> BringPassportToIsland { get; private set; }
+
 
         private const string MenuSection = "Menu";
         public static ConfigEntry<bool> SkipAirportLobby { get; private set; }
@@ -72,6 +80,9 @@ namespace PeakGeneralImprovements
 
             // Fog
             DisableFogTimer = Config.Bind(FogSection, nameof(DisableFogTimer), true, "If set to true, the fog will stop at all campfires until a player triggers its rising again by climbing higher.");
+
+            // Gameplay
+            SpawnMissingPropsOnLateJoins = Config.Bind(GameplaySection, nameof(SpawnMissingPropsOnLateJoins), true, "[Host Only] If set to true, missing items (like upcoming marshmallows) will spawn when a player joins in the middle of a game.");
 
             // GUI
             PlayFogRisesSoundEachTime = Config.Bind(GUISection, nameof(PlayFogRisesSoundEachTime), true, "If set to true, the 'Fog Rises' sound effect will be played on all zones, not just the shore.");

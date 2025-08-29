@@ -4,6 +4,7 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 
 ### GENERAL IMPROVEMENTS:
 * Vines, ropes, and chains' behaviors may be configured to allow direct climbing while still on them, and to support automatically dismounting at the ends.
+* Marshmallows (and other similar props) will correctly spawn at upcoming and active campfires when new players join in the middle of a game. (Configurable as host)
 * The pre-title screen is skippable. (Configurable)
 * The airport lobby is skippable as a "quick start" option when starting a new game, both online and off. (Configurable)
 	* You may also specify which ascent to use when quick starting, if any. If left blank, it uses your max unlocked ascent.

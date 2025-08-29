@@ -1,16 +1,17 @@
 ﻿#if ENABLE_CHEATMODE
+
 using System;
 using HarmonyLib;
 using Photon.Pun;
+using Steamworks;
 using UnityEngine;
-#endif
 
 namespace PeakGeneralImprovements.Patches
 {
-    internal static class CharacterPatch
+    internal static class DebuggerPatch
     {
-#if ENABLE_CHEATMODE
         private static bool _cheatsEnabled = false;
+        private static bool _preventAchievements = false;
         private static Tuple<float, float, float, float, float> _originalValues;
 
         [HarmonyPatch(typeof(Character), nameof(Update))]
@@ -35,6 +36,8 @@ namespace PeakGeneralImprovements.Patches
                             movement.jumpImpulse,
                             movement.maxAngle
                         );
+
+                        _preventAchievements = true;
                     }
 
                     __instance.infiniteStam = _cheatsEnabled;
@@ -48,12 +51,13 @@ namespace PeakGeneralImprovements.Patches
                     Plugin.MLS.LogError($"CHEAT MODE NOW {(_cheatsEnabled ? "ENABLED" : "DISABLED")}!");
                 }
 
-                if (Input.GetKeyDown(KeyCode.F2))
+                if (_cheatsEnabled && Input.GetKeyDown(KeyCode.F2))
                 {
                     if (CampfirePatch.CurrentFarthest?.transform != null)
                     {
-                        var offset = new Vector3(UnityEngine.Random.Range(2, 5), 0, UnityEngine.Random.Range(2, 5));
-                        var newPos = CampfirePatch.CurrentFarthest.transform.position + offset;
+                        int[] offsets = new int[2];
+                        for (int i = 0; i < 2; i++) offsets[i] = UnityEngine.Random.Range(2, 5) * (int)Mathf.Sign(UnityEngine.Random.Range(-1, 1));
+                        var newPos = CampfirePatch.CurrentFarthest.transform.position + new Vector3(offsets[0], 2, offsets[1]);
                         __instance.photonView.RPC(nameof(Character.WarpPlayerRPC), RpcTarget.All, new object[] { newPos, true });
 
                         Plugin.MLS.LogError("TELEPORTED TO FARTHEST CAMPFIRE!");
@@ -72,6 +76,16 @@ namespace PeakGeneralImprovements.Patches
         {
             return !_cheatsEnabled;
         }
-#endif
+
+        [HarmonyPatch(typeof(SteamUserStats), nameof(SteamUserStats.SetAchievement))]
+        [HarmonyPatch(typeof(SteamUserStats), nameof(SteamUserStats.SetStat), typeof(string), typeof(int))]
+        [HarmonyPatch(typeof(SteamUserStats), nameof(SteamUserStats.SetStat), typeof(string), typeof(float))]
+        [HarmonyPrefix]
+        private static bool PreventAchievements()
+        {
+            return !_preventAchievements;
+        }
     }
 }
+
+#endif

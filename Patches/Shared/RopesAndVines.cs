@@ -79,12 +79,15 @@ namespace PeakGeneralImprovements.Patches.Shared
 
         private static bool ShouldAutoDismount(Character character, Type classType)
         {
-            // Should dismount if climb percent is at the end and y movement matches
             bool isRope = classType == typeof(CharacterRopeHandling);
             bool goingUp = character.input.movementInput.y > 0;
             float percent = isRope ? character.data.ropePercent : character.data.vinePercent;
+            bool atBeginning = percent <= 0.01f;
+            bool atEnd = percent >= 0.99f;
 
-            return (goingUp && percent >= 0.99f) || (!goingUp && percent <= 0.01f);
+            // If on a rope, dismount if actively climbing in the direction of the beginning or end and we reach it. For vines, dismount at either end if moving vertically
+            return isRope ? ((goingUp && atEnd) || (!goingUp && atBeginning))
+                : (MathF.Abs(character.input.movementInput.y) >= 0.1f && (atBeginning || atEnd));
         }
     }
 }
