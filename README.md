@@ -1,4 +1,4 @@
-# GeneralImprovements
+# PeakGeneralImprovements
 
 Everything is mostly configurable and improves (IMO) several things about the game, with more to come.
 
@@ -14,10 +14,10 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 * The player no longer gets hungry while near campfires. (Configurable)
 
 ### NEW FEATURES:
-* TBD
+* The hot sun (Mesa) may be allowed to cook items that are being actively held up by the player to shade themselves. If so, it will continue to cook as long as the item is being used to block the sun.
 
 ### BUGFIXES:
 * Fixes being able to accidentally drop items through terrain.
 * Fixes certain object's culling distance checks not working when spectating another player.
 * Items that have been fully cooked in lava will now be automatically destroyed to prevent infinite cooking and log spam. (Modded host only)
-* The climbing wall rope at the airport will now work every time the scene loads, instead of only the first time.
+* The climbing wall rope at the airport will now work every time the scene loads, instead of only the first time. (Modded host only)

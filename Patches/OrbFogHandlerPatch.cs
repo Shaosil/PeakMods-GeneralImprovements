@@ -6,13 +6,16 @@ namespace PeakGeneralImprovements.Patches
     {
         [HarmonyPatch(typeof(OrbFogHandler), nameof(TimeToMove))]
         [HarmonyPrefix]
-        private static void TimeToMove(bool __result)
+        private static bool TimeToMove(ref bool __result)
         {
-            // Disable all fog activation timers if campfires should be safe zones
+            // Disable fog activation timeout if needed
             if (Plugin.DisableFogTimer.Value)
             {
                 __result = false;
+                return false;
             }
+
+            return true;
         }
     }
 }

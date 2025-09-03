@@ -1,9 +1,16 @@
 # Changelog
 
+### v1.0.5 - Hotfix and new feature
+* Fixed `DisableFogTimer` not working at all when enabled.
+* Added `HotSunCooksShieldingItems` as an option (defaults to `None`) to make the mesa sun slowly cook items *only when the player is holding them up to shade themselves.* Options:
+	* `None` - Unchanged gameplay
+	* `OnlyFood` - The hot sun will only cook food items that are used as shields
+	* `AllCookables` - The hot sun will cook anything that can be cooked that is used as a shield
+
 ### v1.0.4 - Minor game bugfixes
 * Fixed a bug where manually culled items (like the flowers on the peak) did not take spectated players into account.
 * Items that fully cooked in lava will now be automatically destroyed (by a modded host only) to prevent infinite cooking and log spam.
-* Fixed the airport climbing wall rope only appearing the first time you start a new game (subsequent airport loads would result in no rope).
+* Fixed the airport climbing wall rope only appearing the first time you start a new game (subsequent airport loads would result in no rope). Modded host only.
 
 ### v1.0.3 - Hotfix and new option
 * Tweaked the auto dismount behavior to more accurately dismount when on certain sides of vines.

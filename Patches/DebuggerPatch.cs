@@ -5,6 +5,7 @@ using HarmonyLib;
 using Photon.Pun;
 using Steamworks;
 using UnityEngine;
+using Zorro.Core;
 
 namespace PeakGeneralImprovements.Patches
 {
@@ -14,9 +15,36 @@ namespace PeakGeneralImprovements.Patches
         private static bool _preventAchievements = false;
         private static Tuple<float, float, float, float, float> _originalValues;
 
-        [HarmonyPatch(typeof(Character), nameof(Update))]
+        [HarmonyPatch(typeof(MainMenuMainPage), "Start")]
         [HarmonyPostfix]
-        private static void Update(Character __instance)
+        private static void MainMenu_Start()
+        {
+            if (_cheatsEnabled || _preventAchievements)
+            {
+                _cheatsEnabled = false;
+                _preventAchievements = false;
+                Plugin.MLS.LogError("CHEAT MODE HAS BEEN DISABLED - ACHIEVEMENTS ARE REENABLED UNTIL NEXT CHEAT ACTIVATED.");
+            }
+        }
+
+        [HarmonyPatch(typeof(MainMenuMainPage), "Update")]
+        [HarmonyPostfix]
+        private static void MainMenuMainPage_Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                NextLevelService service = GameHandler.GetService<NextLevelService>();
+                NextLevelService.NextLevelData newData = new NextLevelService.NextLevelData { CurrentLevelIndex = service.Data.Value.CurrentLevelIndex + 1, SecondsLeftFromQueryTime = 60 };
+                service.Data = Optionable<NextLevelService.NextLevelData>.Some(newData);
+                Plugin.MLS.LogError($"NEXT LEVEL INDEX HAS BEEN INCREMENTED ({newData.CurrentLevelIndex})");
+
+                _preventAchievements = true;
+            }
+        }
+
+        [HarmonyPatch(typeof(Character), "Update")]
+        [HarmonyPostfix]
+        private static void Character_Update(Character __instance)
         {
             if (__instance.IsLocal && PhotonNetwork.IsMasterClient)
             {

@@ -32,6 +32,7 @@ namespace PeakGeneralImprovements
 
         private const string GameplaySection = "Gameplay";
         public static ConfigEntry<bool> SpawnMissingPropsOnLateJoins { get; private set; }
+        public static ConfigEntry<eHotSunCookingOptions> HotSunCooksShieldingItems { get; private set; }
 
 
         private const string GUISection = "GUI";
@@ -83,6 +84,7 @@ namespace PeakGeneralImprovements
 
             // Gameplay
             SpawnMissingPropsOnLateJoins = Config.Bind(GameplaySection, nameof(SpawnMissingPropsOnLateJoins), true, "[Host Only] If set to true, missing items (like upcoming marshmallows) will spawn when a player joins in the middle of a game.");
+            HotSunCooksShieldingItems = Config.Bind(GameplaySection, nameof(HotSunCooksShieldingItems), eHotSunCookingOptions.None, "Allows the hot sun (in mesa) to continuously cook items that are being held up to shade the player from heat damage.");
 
             // GUI
             PlayFogRisesSoundEachTime = Config.Bind(GUISection, nameof(PlayFogRisesSoundEachTime), true, "If set to true, the 'Fog Rises' sound effect will be played on all zones, not just the shore.");
