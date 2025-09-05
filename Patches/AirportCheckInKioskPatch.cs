@@ -11,7 +11,10 @@ namespace PeakGeneralImprovements.Patches
         [HarmonyPostfix]
         private static void Start(AirportCheckInKiosk __instance)
         {
-            __instance.StartCoroutine(WaitToSpawnRope());
+            if (Plugin.FixAirportRope.Value)
+            {
+                __instance.StartCoroutine(WaitToSpawnRope());
+            }
         }
 
         private static IEnumerator WaitToSpawnRope()

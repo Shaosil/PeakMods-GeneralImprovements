@@ -5,6 +5,7 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 ### GENERAL IMPROVEMENTS:
 * Vines, ropes, and chains' behaviors may be configured to allow direct climbing while still on them, and to support automatically dismounting at the ends.
 * Marshmallows (and other similar props) will correctly spawn at upcoming and active campfires when new players join in the middle of a game. (Configurable as host)
+* All emotes except ragdoll can now loop inifinitely, and even unmodded clients will see it. (Configurable)
 * The pre-title screen is skippable. (Configurable)
 * The airport lobby is skippable as a "quick start" option when starting a new game, both online and off. (Configurable)
 	* You may also specify which ascent to use when quick starting, if any. If left blank, it uses your max unlocked ascent.
@@ -20,4 +21,4 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 * Fixes being able to accidentally drop items through terrain.
 * Fixes certain object's culling distance checks not working when spectating another player.
 * Items that have been fully cooked in lava will now be automatically destroyed to prevent infinite cooking and log spam. (Modded host only)
-* The climbing wall rope at the airport will now work every time the scene loads, instead of only the first time. (Modded host only)
+* The climbing wall rope at the airport will now work every time the scene loads, instead of only the first time. (Configurable. Modded host only, but fix propogates to clients)

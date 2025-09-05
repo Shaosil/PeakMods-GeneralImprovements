@@ -42,6 +42,9 @@
         <Reference Include="UnityEngine">
             <HintPath>DLLs\UnityEngine.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.AnimationModule">
+          <HintPath>DLLs\UnityEngine.AnimationModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.AudioModule">
             <HintPath>DLLs\UnityEngine.AudioModule.dll</HintPath>
         </Reference>
@@ -61,6 +64,10 @@
 
     <ItemGroup>
         <Publicize Include="BepInEx:BepInEx.Configuration.ConfigFile.OrphanedEntries" />
+        <Publicize Include="Assembly-CSharp:CharacterAnimations.character" />
+        <Publicize Include="Assembly-CSharp:CharacterAnimations.sinceEmoteStart" />
+        <Publicize Include="Assembly-CSharp:CharacterAnimations.PlayEmote" />
+        <Publicize Include="Assembly-CSharp:CharacterAnimations.RPCA_PlayRemove" />
         <Publicize Include="Assembly-CSharp:Character.infiniteStam" />
         <Publicize Include="Assembly-CSharp:Character.WarpPlayer" />
         <Publicize Include="Assembly-CSharp:CharacterClimbing.TryToStartWallClimb" />

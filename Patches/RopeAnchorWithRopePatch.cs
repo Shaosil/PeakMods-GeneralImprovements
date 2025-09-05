@@ -13,21 +13,24 @@ namespace PeakGeneralImprovements.Patches
         {
             CodeMatcher matcher = new CodeMatcher(instructions);
 
-            Plugin.MLS.LogDebug("Transpiling RopeAnchorWithRope.OnJoinedRoom to fix climbing wall rope only working one time.");
-
-            // this.SpawnRope();
-            matcher.MatchForward(false,
-                new CodeMatch(i => i.IsLdarg(0)),
-                new CodeMatch(i => i.Calls(typeof(RopeAnchorWithRope).GetMethod(nameof(RopeAnchorWithRope.SpawnRope)))),
-                new CodeMatch(OpCodes.Pop));
-
-            if (matcher.IsValid)
+            if (Plugin.FixAirportRope.Value)
             {
-                matcher.RemoveInstructions(3);
-            }
-            else
-            {
-                Plugin.MLS.LogWarning("Unexpected IL code - Could not transpile RopeAnchorWithRope.OnJoinedRoom to fix climbing wall rope only working one time!");
+                Plugin.MLS.LogDebug("Transpiling RopeAnchorWithRope.OnJoinedRoom to fix climbing wall rope only working one time.");
+
+                // this.SpawnRope();
+                matcher.MatchForward(false,
+                    new CodeMatch(i => i.IsLdarg(0)),
+                    new CodeMatch(i => i.Calls(typeof(RopeAnchorWithRope).GetMethod(nameof(RopeAnchorWithRope.SpawnRope)))),
+                    new CodeMatch(OpCodes.Pop));
+
+                if (matcher.IsValid)
+                {
+                    matcher.RemoveInstructions(3);
+                }
+                else
+                {
+                    Plugin.MLS.LogWarning("Unexpected IL code - Could not transpile RopeAnchorWithRope.OnJoinedRoom to fix climbing wall rope only working one time!");
+                }
             }
 
             return matcher.InstructionEnumeration();

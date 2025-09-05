@@ -21,9 +21,16 @@ namespace PeakGeneralImprovements
         private const string CampfireSection = "Campfire";
         public static ConfigEntry<bool> CampfiresPreventHunger { get; private set; }
 
+        private const string CharacterSection = "Character";
+        public static ConfigEntry<eEmoteLoopingOptions> EmoteLoopMode { get; private set; }
+
 
         private const string ClimbingSection = "Climbing";
         public static ConfigEntry<eRopeVineChainOptions> RopeVineChainBehavior { get; private set; }
+
+
+        private const string FixesSection = "Fixes";
+        public static ConfigEntry<bool> FixAirportRope { get; private set; }
 
 
         private const string FogSection = "Fog";
@@ -76,8 +83,14 @@ namespace PeakGeneralImprovements
             // Campfire
             CampfiresPreventHunger = Config.Bind(CampfireSection, nameof(CampfiresPreventHunger), true, "If set to true, player will not get hungry when near a campfire.");
 
+            // Character
+            EmoteLoopMode = Config.Bind(CharacterSection, nameof(EmoteLoopMode), eEmoteLoopingOptions.NetworkedLooping, "When enabled, all player emotes except ragdoll will loop until you move. Networked looping animations are synced to everyone but some don't look as fluid. Local looping only shows for you, no one else.");
+
             // Climbing
             RopeVineChainBehavior = Config.Bind(ClimbingSection, nameof(RopeVineChainBehavior), eRopeVineChainOptions.AllowClimbing, $"Changes the behavior of rope/vine/chain climbing. {eRopeVineChainOptions.AllowClimbing} allows grabbing surfaces while still hanging on. {eRopeVineChainOptions.AutoDismount} will also automatically dismount at the ends and attempt to start climbing if possible.");
+
+            // Fixes
+            FixAirportRope = Config.Bind(FixesSection, nameof(FixAirportRope), true, "If set to true, fixes the vanilla bug where the airport climbing rope only spawns the first time you start a game and not on subsequent loads.");
 
             // Fog
             DisableFogTimer = Config.Bind(FogSection, nameof(DisableFogTimer), true, "If set to true, the fog will stop at all campfires until a player triggers its rising again by climbing higher.");

@@ -1,5 +1,12 @@
 # Changelog
 
+### v1.0.6 - Infinite animations option
+* Added `EmoteLoopMode` as an option (defaults to `NetworkedLooping`), that will make every emote except ragdoll loop until you move. Options:
+	* `None` - Unchanged gameplay, emotes will not loop
+	* `NetworkedLooping` - Emotes will loop, even on unmodded clients, but about half of the animations will jerk a bit at the beginning of each loop (on the clients only).
+	* `LocalLoopingOnly` - Emotes will loop, but other players won't see the looping.
+* Added `FixAirportRope` as an option (defaults to true) to control toggling the fix from v1.0.4.
+
 ### v1.0.5 - Hotfix and new feature
 * Fixed `DisableFogTimer` not working at all when enabled.
 * Added `HotSunCooksShieldingItems` as an option (defaults to `None`) to make the mesa sun slowly cook items *only when the player is holding them up to shade themselves.* Options:
