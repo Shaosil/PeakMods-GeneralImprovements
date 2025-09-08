@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection.Emit;
 using HarmonyLib;
+using PeakGeneralImprovements.Utilities;
 
 namespace PeakGeneralImprovements.Patches
 {
@@ -15,11 +15,7 @@ namespace PeakGeneralImprovements.Patches
 
             if (Plugin.RopeVineChainBehavior.Value != Enums.eRopeVineChainOptions.Vanilla)
             {
-                Func<IEnumerable<CodeInstruction>> returnWithWarning = () =>
-                {
-                    Plugin.MLS.LogWarning("Unexpected IL code when trying to transpile CharacterClimbing.CanClimb. Rope/vine/chain behavior will not be changed!");
-                    return instructions;
-                };
+                string invalidMessage = "Unexpected IL code when trying to transpile CharacterClimbing.CanClimb. Rope/vine/chain behavior will not be changed!";
 
                 // Store vine climbing label
                 Label? vineBranch = null;
@@ -33,7 +29,7 @@ namespace PeakGeneralImprovements.Patches
                     new CodeMatch(i => i.LoadsField(typeof(CharacterData).GetField(nameof(CharacterData.sinceClimb)))),
                     new CodeMatch(OpCodes.Ldc_R4),
                     new CodeMatch(i => i.Branches(out _)));
-                if (!matcher.IsValid) return returnWithWarning();
+                if (!matcher.IsValid) return instructions.ReturnWithMessage(invalidMessage);
 
                 matcher.SetOperandAndAdvance(vineBranch);
                 matcher.RemoveInstructions(2);
@@ -42,7 +38,7 @@ namespace PeakGeneralImprovements.Patches
                 matcher.MatchForward(true,
                     new CodeMatch(i => i.LoadsField(typeof(CharacterData).GetField(nameof(CharacterData.isRopeClimbing)))),
                     new CodeMatch(i => i.Branches(out _)));
-                if (!matcher.IsValid) return returnWithWarning();
+                if (!matcher.IsValid) return instructions.ReturnWithMessage(invalidMessage);
 
                 matcher.SetAndAdvance(OpCodes.Brtrue_S, vineBranch);
                 matcher.RemoveInstructions(2);
@@ -51,7 +47,7 @@ namespace PeakGeneralImprovements.Patches
                 matcher.MatchForward(true,
                     new CodeMatch(i => i.LoadsField(typeof(CharacterData).GetField(nameof(CharacterData.isVineClimbing)))),
                     new CodeMatch(i => i.Branches(out _)));
-                if (!matcher.IsValid) return returnWithWarning();
+                if (!matcher.IsValid) return instructions.ReturnWithMessage(invalidMessage);
 
                 Plugin.MLS.LogDebug("Transpiling CharacterClimbing.CanClimb to allow direct climbing from a rope/vine/chain.");
                 matcher.Opcode = OpCodes.Brtrue_S;

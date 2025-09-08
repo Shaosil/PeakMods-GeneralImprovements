@@ -20,6 +20,7 @@ namespace PeakGeneralImprovements
 
         private const string CampfireSection = "Campfire";
         public static ConfigEntry<bool> CampfiresPreventHunger { get; private set; }
+        public static ConfigEntry<bool> KilnCampfireIsSafeZone { get; private set; }
 
         private const string CharacterSection = "Character";
         public static ConfigEntry<eEmoteLoopingOptions> EmoteLoopMode { get; private set; }
@@ -31,6 +32,7 @@ namespace PeakGeneralImprovements
 
         private const string FixesSection = "Fixes";
         public static ConfigEntry<bool> FixAirportRope { get; private set; }
+        public static ConfigEntry<bool> FixDeadPlayersPreventingFog { get; private set; }
 
 
         private const string FogSection = "Fog";
@@ -38,13 +40,12 @@ namespace PeakGeneralImprovements
 
 
         private const string GameplaySection = "Gameplay";
-        public static ConfigEntry<bool> SpawnMissingPropsOnLateJoins { get; private set; }
         public static ConfigEntry<eHotSunCookingOptions> HotSunCooksShieldingItems { get; private set; }
+        public static ConfigEntry<bool> SpawnMissingPropsOnLateJoins { get; private set; }
 
 
         private const string GUISection = "GUI";
         public static ConfigEntry<bool> PlayFogRisesSoundEachTime { get; private set; }
-        public static ConfigEntry<bool> SkipPretitleScreen { get; private set; }
 
 
         private const string InventorySection = "Inventory";
@@ -55,6 +56,7 @@ namespace PeakGeneralImprovements
         public static ConfigEntry<bool> SkipAirportLobby { get; private set; }
         public static ConfigEntry<string> SkipAirportUsesAscent { get; private set; }
         public static int SkipAirportUsesAscentNum;
+        public static ConfigEntry<bool> SkipPretitleScreen { get; private set; }
 
         private void Awake()
         {
@@ -82,6 +84,7 @@ namespace PeakGeneralImprovements
         {
             // Campfire
             CampfiresPreventHunger = Config.Bind(CampfireSection, nameof(CampfiresPreventHunger), true, "If set to true, player will not get hungry when near a campfire.");
+            KilnCampfireIsSafeZone = Config.Bind(CampfireSection, nameof(KilnCampfireIsSafeZone), true, "[Host Only] If set to true, the kiln lava timer will not start counting down until at least one person leaves its campfire area.");
 
             // Character
             EmoteLoopMode = Config.Bind(CharacterSection, nameof(EmoteLoopMode), eEmoteLoopingOptions.NetworkedLooping, "When enabled, all player emotes except ragdoll will loop until you move. Networked looping animations are synced to everyone but some don't look as fluid. Local looping only shows for you, no one else.");
@@ -91,13 +94,14 @@ namespace PeakGeneralImprovements
 
             // Fixes
             FixAirportRope = Config.Bind(FixesSection, nameof(FixAirportRope), true, "If set to true, fixes the vanilla bug where the airport climbing rope only spawns the first time you start a game and not on subsequent loads.");
+            FixDeadPlayersPreventingFog = Config.Bind(FixesSection, nameof(FixDeadPlayersPreventingFog), true, "If set to true, fixes the vanilla bug where dead players who are below the fog rising threshold will prevent it from rising before the time limit.");
 
             // Fog
-            DisableFogTimer = Config.Bind(FogSection, nameof(DisableFogTimer), true, "If set to true, the fog will stop at all campfires until a player triggers its rising again by climbing higher.");
+            DisableFogTimer = Config.Bind(FogSection, nameof(DisableFogTimer), true, "[Host Only] If set to true, the fog will stop at all campfires until a player triggers its rising again by climbing higher.");
 
             // Gameplay
-            SpawnMissingPropsOnLateJoins = Config.Bind(GameplaySection, nameof(SpawnMissingPropsOnLateJoins), true, "[Host Only] If set to true, missing items (like upcoming marshmallows) will spawn when a player joins in the middle of a game.");
             HotSunCooksShieldingItems = Config.Bind(GameplaySection, nameof(HotSunCooksShieldingItems), eHotSunCookingOptions.None, "Allows the hot sun (in mesa) to continuously cook items that are being held up to shade the player from heat damage.");
+            SpawnMissingPropsOnLateJoins = Config.Bind(GameplaySection, nameof(SpawnMissingPropsOnLateJoins), true, "[Host Only] If set to true, missing items (like upcoming marshmallows) will spawn when a player joins in the middle of a game.");
 
             // GUI
             PlayFogRisesSoundEachTime = Config.Bind(GUISection, nameof(PlayFogRisesSoundEachTime), true, "If set to true, the 'Fog Rises' sound effect will be played on all zones, not just the shore.");

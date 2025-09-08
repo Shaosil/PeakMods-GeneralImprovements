@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using PeakGeneralImprovements.Utilities;
 using Photon.Pun;
 
 namespace PeakGeneralImprovements.Patches
@@ -29,12 +30,10 @@ namespace PeakGeneralImprovements.Patches
 
             if (Plugin.EmoteLoopMode.Value != Enums.eEmoteLoopingOptions.None)
             {
-                Func<IEnumerable<CodeInstruction>> returnWithWarning = () =>
-                {
-                    Plugin.MLS.LogWarning("Unexpected IL code when trying to transpile CharacterAnimations.Update. Emotes will not loop!");
-                    return instructions;
-                };
+                string invalidMessage = "Unexpected IL code when trying to transpile CharacterAnimations.Update. Emotes will not loop!";
+
                 FieldInfo sinceEmoteStartField = typeof(CharacterAnimations).GetField("sinceEmoteStart", BindingFlags.NonPublic | BindingFlags.Instance);
+                Label? retLabel = null;
 
                 // ... (sinceEmoteStart > 2f && (...
                 matcher.MatchForward(false,
@@ -43,27 +42,27 @@ namespace PeakGeneralImprovements.Patches
                     new CodeMatch(i => i.LoadsConstant(2f)),
                     new CodeMatch(i => i.Branches(out _)));
 
-                if (matcher.IsInvalid) return returnWithWarning();
+                if (matcher.IsInvalid) return instructions.ReturnWithMessage(invalidMessage);
 
-                // Simply delete the > 2f check and add a label to the next instruction
-                matcher.RemoveInstructions(4).CreateLabel(out Label restOfIfLabel);
+                // Simply delete the > 2f check
+                matcher.RemoveInstructions(4);
 
                 // if (emoting &&...
-                matcher.MatchBack(false,
+                matcher.MatchBack(true,
                     new CodeMatch(OpCodes.Ldarg_0),
                     new CodeMatch(i => i.LoadsField(typeof(CharacterAnimations).GetField("emoting", BindingFlags.NonPublic | BindingFlags.Instance))),
-                    new CodeMatch(i => i.Branches(out _)),
+                    new CodeMatch(i => i.Branches(out retLabel)),
                     new CodeMatch(OpCodes.Ldarg_0));
 
-                if (matcher.IsInvalid) return returnWithWarning();
+                if (matcher.IsInvalid) return instructions.ReturnWithMessage(invalidMessage);
 
                 string desc = Plugin.EmoteLoopMode.Value == Enums.eEmoteLoopingOptions.NetworkedLooping ? "networked" : "local";
                 Plugin.MLS.LogDebug($"Transpiling CharacterAnimations.Update to make emotes use {desc} looping until player moves.");
 
-                // Throw in a should keep emoting check before the rest of the if statements
+                // Throw in a should keep emoting check before the rest of the if statements, and if so, branch to return label
                 matcher.InsertAndAdvance(new CodeInstruction(OpCodes.Ldarg_0));
                 matcher.InsertAndAdvance(Transpilers.EmitDelegate<Func<CharacterAnimations, bool>>(ShouldKeepEmoting));
-                matcher.InsertAndAdvance(new CodeInstruction(OpCodes.Brfalse_S, restOfIfLabel));
+                matcher.InsertAndAdvance(new CodeInstruction(OpCodes.Brtrue_S, retLabel));
             }
 
             return matcher.InstructionEnumeration();
@@ -87,7 +86,7 @@ namespace PeakGeneralImprovements.Patches
                 else if (emoteIsFingerWag)
                 {
                     // Locally, just call the RPCA method manually to retrigger the animation
-                    anim.RPCA_PlayRemove(_lastPlayedEmote);
+                    anim.character.refs.view.RPC(nameof(CharacterAnimations.RPCA_PlayRemove), PhotonNetwork.LocalPlayer, new object[] { _lastPlayedEmote });
                 }
 
                 // Reset variable for next check

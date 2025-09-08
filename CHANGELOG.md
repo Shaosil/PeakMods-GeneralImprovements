@@ -1,5 +1,12 @@
 # Changelog
 
+### v1.0.7 - Fixes and improvements
+* Fixed `EmoteLoopMode` never detecting a stop condition and continuously looping emotes (especially obvious with clients).
+* Fixed compatibility with [PEAKER](https://thunderstore.io/c/peak/p/lammas123/PEAKER/) where GI would call an RPC in a strange way and cause error log spam.
+* Added `KilnCampfireIsSafeZone` as an option (defaults to true). Similar to `DisableFogTimer`, it will prevent the lava rising timer from starting until at least one person goes > 30m from the kiln campfire.
+* Added `FixDeadPlayersPreventingFog` as an option (defaults to true) that fixes a vanilla bug where dead players would prevent the fog from being triggered with height checks.
+* Fixed certain instanced meshes drawing as black objects when spectating players (mostly the grass at the peak).
+
 ### v1.0.6 - Infinite animations option
 * Added `EmoteLoopMode` as an option (defaults to `NetworkedLooping`), that will make every emote except ragdoll loop until you move. Options:
 	* `None` - Unchanged gameplay, emotes will not loop

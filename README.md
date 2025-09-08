@@ -11,7 +11,8 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 	* You may also specify which ascent to use when quick starting, if any. If left blank, it uses your max unlocked ascent.
 * The passport may be brought along to the island. Useful when skipping the airport. (Configurable)
 * The fog rising sound effect now plays on subsequent levels, not only on the shore. (Configurable)
-* The fog no longer has a wait timer, and only activates from height checks. (Configurable)
+* The fog no longer has a wait timer, and only activates from height checks. (Configurable as host)
+* The kiln campfire now functions as a safe zone and will prevent the lava rising timer from counting down until at least one player leaves the campfire. (Configurable as host)
 * The player no longer gets hungry while near campfires. (Configurable)
 
 ### NEW FEATURES:
@@ -22,3 +23,4 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 * Fixes certain object's culling distance checks not working when spectating another player.
 * Items that have been fully cooked in lava will now be automatically destroyed to prevent infinite cooking and log spam. (Modded host only)
 * The climbing wall rope at the airport will now work every time the scene loads, instead of only the first time. (Configurable. Modded host only, but fix propogates to clients)
+* Dead players will no longer contribute to height checks for triggering the fog rising. (Configurable)
