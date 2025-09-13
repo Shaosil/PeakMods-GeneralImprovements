@@ -64,6 +64,7 @@
 
     <ItemGroup>
         <Publicize Include="BepInEx:BepInEx.Configuration.ConfigFile.OrphanedEntries" />
+        <Publicize Include="Assembly-CSharp:CharacterAfflictions.UpdateWeight" />
         <Publicize Include="Assembly-CSharp:CharacterAnimations.character" />
         <Publicize Include="Assembly-CSharp:CharacterAnimations.sinceEmoteStart" />
         <Publicize Include="Assembly-CSharp:CharacterAnimations.PlayEmote" />
@@ -74,6 +75,8 @@
         <Publicize Include="Assembly-CSharp:CharacterData.isInvincible" />
         <Publicize Include="Assembly-CSharp:CharacterItems.SpawnItemInHand" />
         <Publicize Include="Assembly-CSharp:CharacterMovement.maxAngle" />
+        <Publicize Include="Assembly-CSharp:ItemActionBase.character" />
+        <Publicize Include="Assembly-CSharp:RopeSpool.DefaultFuel" />
     </ItemGroup>
 
     <Target Name="CopyFilesToGamePath" AfterTargets="PostBuildEvent">

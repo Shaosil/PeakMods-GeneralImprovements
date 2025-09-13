@@ -14,9 +14,12 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 * The fog no longer has a wait timer, and only activates from height checks. (Configurable as host)
 * The kiln campfire now functions as a safe zone and will prevent the lava rising timer from counting down until at least one player leaves the campfire. (Configurable as host)
 * The player no longer gets hungry while near campfires. (Configurable)
+* Players entering the airport lobby may now spawn in all elevators, not only the single one. (Configurable as host)
+* The airport elevator doors now open each time a player joins the lobby you are in. (Configurable)
 
 ### NEW FEATURES:
 * The hot sun (Mesa) may be allowed to cook items that are being actively held up by the player to shade themselves. If so, it will continue to cook as long as the item is being used to block the sun.
+* Multiple use consumable items, such as scout cookies, ropes, and antidotes, may be configured to weigh less the more that is used.
 
 ### BUGFIXES:
 * Fixes being able to accidentally drop items through terrain.

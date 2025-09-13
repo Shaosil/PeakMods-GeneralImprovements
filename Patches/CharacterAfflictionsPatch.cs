@@ -1,4 +1,8 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using HarmonyLib;
+using PeakGeneralImprovements.Utilities;
 using UnityEngine;
 
 namespace PeakGeneralImprovements.Patches
@@ -29,6 +33,66 @@ namespace PeakGeneralImprovements.Patches
             }
 
             return true;
+        }
+
+        [HarmonyPatch(typeof(CharacterAfflictions), "UpdateWeight")]
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> UpdateWeight_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher matcher = new CodeMatcher(instructions);
+
+            if (Plugin.ConsumableItemsGetLighter.Value)
+            {
+                // num += itemSlotVar.prefab.CarryWeight
+                matcher.MatchForward(false,
+                    new CodeMatch(i => i.IsLdloc()),
+                    new CodeMatch(i => i.LoadsField(typeof(ItemSlot).GetField(nameof(ItemSlot.prefab)))),
+                    new CodeMatch(i => i.Calls(typeof(Item).GetMethod("get_CarryWeight"))),
+                    new CodeMatch(OpCodes.Add),
+                    new CodeMatch(OpCodes.Stloc_0));
+
+                if (matcher.IsValid)
+                {
+                    Plugin.MLS.LogDebug("Transpiling CharacterAfflictions.UpdateWeight to allow multi use consumable items to get lighter when used.");
+
+                    matcher.Repeat(m =>
+                    {
+                        // Replace the CarryWeight call with our calculated percentage function, passing in the itemslot and our instance instead of the prefab
+                        m.Advance(1);
+                        m.SetInstructionAndAdvance(new CodeInstruction(OpCodes.Ldarg_0));
+                        m.SetInstructionAndAdvance(Transpilers.EmitDelegate<Func<ItemSlot, CharacterAfflictions, int>>(CalculateModifiedCarryWeight));
+                    });
+                }
+                else
+                {
+                    return instructions.ReturnWithMessage("Unexpected IL code when trying to transpile CharacterAfflictions.UpdateWeight. Multi use items will not get lighter!");
+                }
+            }
+
+            return matcher.InstructionEnumeration();
+        }
+
+        private static int CalculateModifiedCarryWeight(ItemSlot itemSlot, CharacterAfflictions characterAfflictions)
+        {
+            RopeSpool spool = null;
+            float percentLeft = 1f;
+
+            // If this item defines a totalUses or is a rope of some type, change the weight
+            if (characterAfflictions.character.IsLocal && (itemSlot.prefab.TryGetComponent(out spool) || itemSlot.prefab.totalUses > 0))
+            {
+                if (spool && itemSlot.data.TryGetDataEntry(DataEntryKey.Fuel, out FloatItemData currentFuel))
+                {
+                    percentLeft = currentFuel.Value / spool.ropeStartFuel;
+                }
+                else if (itemSlot.prefab.totalUses > 0 && itemSlot.data.TryGetDataEntry(DataEntryKey.ItemUses, out OptionableIntItemData uses) && uses.HasData)
+                {
+                    percentLeft = uses.Value / (float)itemSlot.prefab.totalUses;
+                }
+
+                Plugin.MLS.LogDebug($"Multi-use item weight calculation being overridden - {Math.Round(percentLeft * 100, 2)}% of original weight ({itemSlot.prefab.CarryWeight}) being used.");
+            }
+
+            return (int)Math.Round(itemSlot.prefab.CarryWeight * percentLeft);
         }
     }
 }

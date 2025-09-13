@@ -50,7 +50,11 @@ namespace PeakGeneralImprovements
 
         private const string InventorySection = "Inventory";
         public static ConfigEntry<bool> BringPassportToIsland { get; private set; }
+        public static ConfigEntry<bool> ConsumableItemsGetLighter { get; private set; }
 
+        private const string LobbySection = "Lobby";
+        public static ConfigEntry<bool> AirportElevatorDoorsAlwaysAnimate { get; private set; }
+        public static ConfigEntry<eAirportElevatorOptions> AirportElevatorSpawnBehavior { get; private set; }
 
         private const string MenuSection = "Menu";
         public static ConfigEntry<bool> SkipAirportLobby { get; private set; }
@@ -108,6 +112,11 @@ namespace PeakGeneralImprovements
 
             // Inventory
             BringPassportToIsland = Config.Bind(InventorySection, nameof(BringPassportToIsland), false, "If set to true, you will start on the island holding your passport. Useful when skipping airport.");
+            ConsumableItemsGetLighter = Config.Bind(InventorySection, nameof(ConsumableItemsGetLighter), false, "If set to true, multiple use items like cookies and ropes will get lighter the more you use them. May show minor stamina bar desyncs on other players who do not use this setting.");
+
+            // Lobby
+            AirportElevatorDoorsAlwaysAnimate = Config.Bind(LobbySection, nameof(AirportElevatorDoorsAlwaysAnimate), true, "If set to true, the elevator doors will animate each time a new player joins.");
+            AirportElevatorSpawnBehavior = Config.Bind(LobbySection, nameof(AirportElevatorSpawnBehavior), eAirportElevatorOptions.UseAllInOrder, "[Host Only] Allows all players to spawn in the other elevators in the airport instead of all crowding into one.");
 
             // Menu
             SkipAirportLobby = Config.Bind(MenuSection, nameof(SkipAirportLobby), false, "If set to true, clicking Host Game or Play Offline will go directly to the island, bypassing the airport.");
@@ -118,7 +127,7 @@ namespace PeakGeneralImprovements
         /// <summary>
         /// To be called one time after the game loads in order to handle achievements or other things that need late binding
         /// </summary>
-        public static void LateSanitize()
+        public static void CalculateQuickStartAscent()
         {
             if (SkipAirportLobby.Value)
             {

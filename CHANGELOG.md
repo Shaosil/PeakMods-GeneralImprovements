@@ -1,5 +1,15 @@
 # Changelog
 
+### v1.0.8 - More options and improvements
+* Added `AirportElevatorSpawnBehavior` as a host-only option (defaults to `UseAllInOrder`) that makes all players make use of all elevators in the airport lobby when spawning in. Options:
+	* `Vanilla` - Unchanged gameplay, uses a single elevator.
+	* `UseAllInOrder` - Players spawn in the elevators in sequential order based on their join order
+	* `UseAllRandomly`- Players spawn in a random elevator
+* Added `AirportElevatorDoorsAlwaysAnimate` as an option (defaults to true) that will make the elevator that future joining players spawn into animate like they do when the room loads. Animations are local. 
+* Added `ConsumableItemsGetLighter` as an option (defaults to false) that makes items having multiple uses weigh less each time they are used (scout cookies, ropes, sunscreen...)
+* If left blank, `SkipAirportUsesAscent` will now recalculate each time the main menu loads, allowing the most recently unlocked ascent to always be used.
+* Updated reference DLLs to ensure latest vanilla compatibility.
+
 ### v1.0.7 - Fixes and improvements
 * Fixed `EmoteLoopMode` never detecting a stop condition and continuously looping emotes (especially obvious with clients).
 * Fixed compatibility with [PEAKER](https://thunderstore.io/c/peak/p/lammas123/PEAKER/) where GI would call an RPC in a strange way and cause error log spam.
