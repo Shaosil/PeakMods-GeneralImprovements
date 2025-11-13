@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using Photon.Pun;
@@ -9,9 +8,11 @@ namespace PeakGeneralImprovements.Patches.Shared
 {
     internal static class AirportLobbySkip
     {
-        internal static void ReplaceBasicLoadingScreenWithPlane(CodeMatcher matcher, string methodDesc)
+        public static bool ShouldSkipAirport = false;
+
+        internal static void TranspileLoadingScreenType(CodeMatcher matcher, string methodDesc)
         {
-            if (Plugin.SkipAirportLobby.Value)
+            if (Plugin.AllowAirportLobbySkip.Value)
             {
                 matcher.MatchForward(false,
                     new CodeMatch(i => i.LoadsConstant(0)),
@@ -21,19 +22,19 @@ namespace PeakGeneralImprovements.Patches.Shared
 
                 if (matcher.IsValid)
                 {
-                    Plugin.MLS.LogDebug($"Transpiling {methodDesc} to skip airport lobby.");
-                    matcher.SetOpcodeAndAdvance(OpCodes.Ldc_I4_1); // LoadingScreen.LoadingScreenType.Plane
+                    Plugin.MLS.LogDebug($"Transpiling {methodDesc} to dynamically assign loading screen type.");
+                    matcher.SetInstruction(Transpilers.EmitDelegate<Func<int>>(GetCurrentLoadingScreenType));
                 }
                 else
                 {
-                    Plugin.MLS.LogWarning($"Unexpected IL code when trying to transpile {methodDesc}. Airport lobby may not be skipped!");
+                    Plugin.MLS.LogWarning($"Unexpected IL code when trying to transpile {methodDesc}.");
                 }
             }
         }
 
         public static void TranspileStartGameButtons(CodeMatcher matcher, string methodDesc = null)
         {
-            if (Plugin.SkipAirportLobby.Value)
+            if (Plugin.AllowAirportLobbySkip.Value)
             {
                 // LoadSceneProcess("Airport")
                 matcher.MatchForward(false,
@@ -41,12 +42,12 @@ namespace PeakGeneralImprovements.Patches.Shared
                     new CodeMatch(i => i.LoadsConstant()),
                     new CodeMatch(i => i.LoadsConstant()),
                     new CodeMatch(i => i.LoadsConstant()),
-                    new CodeMatch(i => i.Calls(typeof(LoadingScreenHandler).GetMethod("LoadSceneProcess", BindingFlags.Instance | BindingFlags.NonPublic))));
+                    new CodeMatch(i => i.Calls(typeof(LoadingScreenHandler).GetMethod("LoadSceneProcess"))));
 
                 if (matcher.IsValid)
                 {
-                    if (!string.IsNullOrWhiteSpace(methodDesc)) Plugin.MLS.LogDebug($"Transpiling {methodDesc} to skip airport lobby.");
-                    matcher.SetInstruction(Transpilers.EmitDelegate<Func<string>>(GetCurrentIslandName));
+                    if (!string.IsNullOrWhiteSpace(methodDesc)) Plugin.MLS.LogDebug($"Transpiling {methodDesc} to dynamically assign scene name.");
+                    matcher.SetInstruction(Transpilers.EmitDelegate<Func<string>>(GetCurrentLoadingSceneName));
                 }
                 else
                 {
@@ -55,8 +56,18 @@ namespace PeakGeneralImprovements.Patches.Shared
             }
         }
 
-        private static string GetCurrentIslandName()
+        private static int GetCurrentLoadingScreenType()
         {
+            return (int)(ShouldSkipAirport ? LoadingScreen.LoadingScreenType.Plane : LoadingScreen.LoadingScreenType.Basic);
+        }
+
+        private static string GetCurrentLoadingSceneName()
+        {
+            if (!ShouldSkipAirport)
+            {
+                return "Airport";
+            }    
+
             // Mostly copied from AirportCheckInKiosk.LoadIslandMaster
             NextLevelService service = GameHandler.GetService<NextLevelService>();
             MapBaker mapBaker = SingletonAsset<MapBaker>.Instance;
@@ -70,6 +81,7 @@ namespace PeakGeneralImprovements.Patches.Shared
             Plugin.MLS.LogInfo($"Skipping airport lobby, going directly to level '{sceneToLoad}' at ascent level {Plugin.SkipAirportUsesAscentNum}.");
             GameHandler.AddStatus<SceneSwitchingStatus>(new SceneSwitchingStatus());
             Ascents.currentAscent = Plugin.SkipAirportUsesAscentNum;
+
             return sceneToLoad;
         }
     }

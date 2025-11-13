@@ -7,8 +7,6 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 * Marshmallows (and other similar props) will correctly spawn at upcoming and active campfires when new players join in the middle of a game. (Configurable as host)
 * All emotes except ragdoll can now loop inifinitely, and even unmodded clients will see it. (Configurable)
 * The pre-title screen is skippable. (Configurable)
-* The airport lobby is skippable as a "quick start" option when starting a new game, both online and off. (Configurable)
-	* You may also specify which ascent to use when quick starting, if any. If left blank, it uses your max unlocked ascent.
 * The passport may be brought along to the island. Useful when skipping the airport. (Configurable)
 * The fog rising sound effect now plays on subsequent levels, not only on the shore. (Configurable)
 * The fog no longer has a wait timer, and only activates from height checks. (Configurable as host)
@@ -20,6 +18,9 @@ Everything is mostly configurable and improves (IMO) several things about the ga
 ### NEW FEATURES:
 * The hot sun (Mesa) may be allowed to cook items that are being actively held up by the player to shade themselves. If so, it will continue to cook as long as the item is being used to block the sun.
 * Multiple use consumable items, such as scout cookies, ropes, and antidotes, may be configured to weigh less the more that is used.
+* The airport lobby is skippable as a "quick start" option when starting a new game, both online and off. (Configurable)
+	* You may also specify which ascent to use when quick starting, if any. If left blank, it uses your max unlocked ascent.
+	* You may change the ascent with the number keys while on the main menu.
 
 ### BUGFIXES:
 * Fixes being able to accidentally drop items through terrain.

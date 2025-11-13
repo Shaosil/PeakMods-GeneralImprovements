@@ -11,7 +11,7 @@ namespace PeakGeneralImprovements.Patches
         private static IEnumerable<CodeInstruction> OnLobbyCreated_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             CodeMatcher matcher = new CodeMatcher(instructions);
-            AirportLobbySkip.ReplaceBasicLoadingScreenWithPlane(matcher, "SteamLobbyHandler.OnLobbyCreated");
+            AirportLobbySkip.TranspileLoadingScreenType(matcher, "SteamLobbyHandler.OnLobbyCreated");
             AirportLobbySkip.TranspileStartGameButtons(matcher);
             return matcher.InstructionEnumeration();
         }

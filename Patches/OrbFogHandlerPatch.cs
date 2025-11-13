@@ -53,13 +53,12 @@ namespace PeakGeneralImprovements.Patches
                 Plugin.MLS.LogDebug("Transpiling OrbFogHandler.PlayersHaveMovedOn to fix dead players affecting fog rising trigger.");
 
                 // if (Character.AllCharacters[i].data.dead) continue;
-                matcher.Advance(-1);
-                matcher.InsertAndAdvance(
+                matcher.Advance(-1).Insert(
                     new CodeInstruction(OpCodes.Ldsfld, typeof(Character).GetField(nameof(Character.AllCharacters))),
                     new CodeInstruction(OpCodes.Ldloc_0),
                     new CodeInstruction(OpCodes.Callvirt, typeof(List<Character>).GetMethod("get_Item")),
                     new CodeInstruction(OpCodes.Ldfld, typeof(Character).GetField(nameof(Character.data))),
-                    new CodeInstruction(OpCodes.Ldfld, typeof(CharacterData).GetField(nameof(CharacterData.dead))),
+                    new CodeInstruction(OpCodes.Callvirt, typeof(CharacterData).GetMethod("get_dead")),
                     new CodeInstruction(OpCodes.Brtrue_S, continueLable)
                 );
             }

@@ -57,7 +57,7 @@ namespace PeakGeneralImprovements
         public static ConfigEntry<eAirportElevatorOptions> AirportElevatorSpawnBehavior { get; private set; }
 
         private const string MenuSection = "Menu";
-        public static ConfigEntry<bool> SkipAirportLobby { get; private set; }
+        public static ConfigEntry<bool> AllowAirportLobbySkip { get; private set; }
         public static ConfigEntry<string> SkipAirportUsesAscent { get; private set; }
         public static int SkipAirportUsesAscentNum;
         public static ConfigEntry<bool> SkipPretitleScreen { get; private set; }
@@ -115,21 +115,21 @@ namespace PeakGeneralImprovements
             ConsumableItemsGetLighter = Config.Bind(InventorySection, nameof(ConsumableItemsGetLighter), false, "If set to true, multiple use items like cookies and ropes will get lighter the more you use them. May show minor stamina bar desyncs on other players who do not use this setting.");
 
             // Lobby
-            AirportElevatorDoorsAlwaysAnimate = Config.Bind(LobbySection, nameof(AirportElevatorDoorsAlwaysAnimate), true, "If set to true, the elevator doors will animate each time a new player joins.");
+            AirportElevatorDoorsAlwaysAnimate = Config.Bind(LobbySection, nameof(AirportElevatorDoorsAlwaysAnimate), true, "If set to true and playing with a modded host, the corresponding elevator door will animate each time a new player joins.");
             AirportElevatorSpawnBehavior = Config.Bind(LobbySection, nameof(AirportElevatorSpawnBehavior), eAirportElevatorOptions.UseAllInOrder, "[Host Only] Allows all players to spawn in the other elevators in the airport instead of all crowding into one.");
 
             // Menu
-            SkipAirportLobby = Config.Bind(MenuSection, nameof(SkipAirportLobby), false, "If set to true, clicking Host Game or Play Offline will go directly to the island, bypassing the airport.");
-            SkipAirportUsesAscent = Config.Bind(MenuSection, nameof(SkipAirportUsesAscent), string.Empty, $"If using {nameof(SkipAirportLobby)}, setting this will use the specified number as the ascent level. Leaving it blank will use the max ascent you've unlocked. Clamped from -1 to your max unlocked ascent.");
+            AllowAirportLobbySkip = Config.Bind(MenuSection, nameof(AllowAirportLobbySkip), true, "If set to true, adds quick start buttons to the main menu, which will go directly to the island, bypassing the airport.");
+            SkipAirportUsesAscent = Config.Bind(MenuSection, nameof(SkipAirportUsesAscent), string.Empty, $"If using {nameof(AllowAirportLobbySkip)}, setting this will use the specified number as the ascent level. Leaving it blank will use the max ascent you've unlocked. Clamped from -1 to your max unlocked ascent.");
             SkipPretitleScreen = Config.Bind(MenuSection, nameof(SkipPretitleScreen), false, "If set to true, pre-title (intro) screen will be skipped on startup.");
         }
 
         /// <summary>
         /// To be called one time after the game loads in order to handle achievements or other things that need late binding
         /// </summary>
-        public static void CalculateQuickStartAscent()
+        public static int CalculateQuickStartAscent()
         {
-            if (SkipAirportLobby.Value)
+            if (AllowAirportLobbySkip.Value)
             {
                 // Keep the ascent level to our maximum
                 int maxAscent = 0;
@@ -137,7 +137,7 @@ namespace PeakGeneralImprovements
 
                 if (int.TryParse(SkipAirportUsesAscent.Value, out var wantedAscent))
                 {
-                    SkipAirportUsesAscentNum = Mathf.Clamp(maxAscent, -1, maxAscent);
+                    SkipAirportUsesAscentNum = Mathf.Clamp(wantedAscent, -1, maxAscent);
                     MLS.LogDebug($"{nameof(SkipAirportUsesAscent)} specified {wantedAscent} (current max {maxAscent}). Using {SkipAirportUsesAscentNum} for quick start.");
                 }
                 else
@@ -145,7 +145,10 @@ namespace PeakGeneralImprovements
                     MLS.LogDebug($"{nameof(SkipAirportUsesAscent)} not specified. Using current max ascent ({maxAscent}) for quick start.");
                     SkipAirportUsesAscentNum = maxAscent;
                 }
+
             }
+            
+            return SkipAirportUsesAscentNum;
         }
 
         private void MigrateOldConfigValues()

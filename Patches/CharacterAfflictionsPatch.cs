@@ -76,6 +76,8 @@ namespace PeakGeneralImprovements.Patches
         {
             RopeSpool spool = null;
             float percentLeft = 1f;
+            int originalCarryWeight = itemSlot.prefab.CarryWeight;
+            int modifiedCarryWeight = originalCarryWeight;
 
             // If this item defines a totalUses or is a rope of some type, change the weight
             if (characterAfflictions.character.IsLocal && (itemSlot.prefab.TryGetComponent(out spool) || itemSlot.prefab.totalUses > 0))
@@ -89,10 +91,14 @@ namespace PeakGeneralImprovements.Patches
                     percentLeft = uses.Value / (float)itemSlot.prefab.totalUses;
                 }
 
-                Plugin.MLS.LogDebug($"Multi-use item weight calculation being overridden - {Math.Round(percentLeft * 100, 2)}% of original weight ({itemSlot.prefab.CarryWeight}) being used.");
+                if (percentLeft < 1f)
+                {
+                    modifiedCarryWeight = (int)Math.Round(originalCarryWeight * percentLeft);
+                    Plugin.MLS.LogDebug($"Multi-use item weight calculation being overridden (for {characterAfflictions.character.characterName}'s {itemSlot.prefab.name}) - {Math.Round(percentLeft * 100, 2)}% ({modifiedCarryWeight}) of original weight ({originalCarryWeight}) being used.");
+                }
             }
 
-            return (int)Math.Round(itemSlot.prefab.CarryWeight * percentLeft);
+            return modifiedCarryWeight;
         }
     }
 }

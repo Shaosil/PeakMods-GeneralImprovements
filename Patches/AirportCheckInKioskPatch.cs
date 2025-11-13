@@ -46,7 +46,7 @@ namespace PeakGeneralImprovements.Patches
 
         private static IEnumerator WaitToSpawnRope()
         {
-            yield return new WaitUntil(() => PhotonNetwork.InRoom);
+            yield return new WaitUntil(() => PhotonNetwork.InRoom && PlayerHandler.TryGetCharacter(PhotonNetwork.LocalPlayer.ActorNumber, out _));
 
             // Force a rope spawn at the airport (it was removed from the RopeAnchorWithRope class)
             var ropeAnchors = Object.FindObjectsByType<RopeAnchorWithRope>(FindObjectsSortMode.None);

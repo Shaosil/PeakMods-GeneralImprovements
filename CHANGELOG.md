@@ -1,5 +1,14 @@
 # Changelog
 
+### v1.0.9 - More fixes and improvements
+* Fixed a few miscellaneous exceptions that were happening due to code being out of sync with game updates.
+* Fixed a bug where `SkipAirportUsesAscent` was not always working when specified.
+* Replaced `SkipAirportLobby` with `AllowAirportLobbySkip` (defaults to true) that shows quick start buttons on the main menu instead (in addition to the regular start buttons).
+	* `SkipAirportUsesAscent` is still usable, however you may also press the number keys while on the main menu to change it. The backquote (`) next to 1 sets the ascent to -1 (tenderfoot).
+* Improved the code behind `FixAirportRope` to lessen error spam on lobby reloads.
+* Improved `AirportElevatorDoorsAlwaysAnimate` to use an RPC for the fastest response time, but it only works if the hosting player uses this mod.
+* Updated reference DLLs to ensure latest vanilla compatibility.
+
 ### v1.0.8 - More options and improvements
 * Added `AirportElevatorSpawnBehavior` as a host-only option (defaults to `UseAllInOrder`) that makes all players make use of all elevators in the airport lobby when spawning in. Options:
 	* `Vanilla` - Unchanged gameplay, uses a single elevator.
