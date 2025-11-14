@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using PeakGeneralImprovements.Patches.Shared;
+using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,7 @@ namespace PeakGeneralImprovements.Patches
     {
         private static TextMeshProUGUI quickHostButtonText;
         private static TextMeshProUGUI quickSoloButtonText;
+        private static int MaxKnownAscent = 0;
 
         [HarmonyPatch(typeof(MainMenuMainPage), nameof(Start))]
         [HarmonyPostfix]
@@ -22,7 +24,18 @@ namespace PeakGeneralImprovements.Patches
                 AirportLobbySkip.ShouldSkipAirport = false;
 
                 // This has to be called after Steam starts up because it reads user stats. Run it each time the menu loads.
-                int curAscent = Plugin.CalculateQuickStartAscent();
+                if (SteamManager.Initialized) SteamUserStats.GetStat("MaxAscent", out MaxKnownAscent);
+
+                if (int.TryParse(Plugin.SkipAirportUsesAscent.Value, out var wantedAscent))
+                {
+                    Plugin.SkipAirportUsesAscentNum = Mathf.Clamp(wantedAscent, -1, MaxKnownAscent);
+                    Plugin.MLS.LogDebug($"{nameof(Plugin.SkipAirportUsesAscent)} specified {wantedAscent} (current max {MaxKnownAscent}). Using {Plugin.SkipAirportUsesAscentNum} for quick start.");
+                }
+                else
+                {
+                    Plugin.MLS.LogDebug($"{nameof(Plugin.SkipAirportUsesAscent)} not specified. Using current max ascent ({MaxKnownAscent}) for quick start.");
+                    Plugin.SkipAirportUsesAscentNum = MaxKnownAscent;
+                }
 
                 Plugin.MLS.LogInfo("Adding quick start buttons to main menu.");
 
@@ -43,7 +56,7 @@ namespace PeakGeneralImprovements.Patches
                 Object.Destroy(quickSoloButton.GetComponentInChildren<LocalizedText>());
                 quickSoloButtonText = quickSoloButton.GetComponentInChildren<TextMeshProUGUI>();
 
-                UpdateQuickAscent(curAscent);
+                UpdateQuickAscent(Plugin.SkipAirportUsesAscentNum);
             }
         }
 
@@ -55,7 +68,7 @@ namespace PeakGeneralImprovements.Patches
             if (Input.GetKeyDown(KeyCode.BackQuote)) UpdateQuickAscent(-1);
 
             // Ascent 0-7
-            for (int i = 0; i <= 7; i++)
+            for (int i = 0; i <= MaxKnownAscent; i++)
             {
                 if (Input.GetKeyDown(KeyCode.Alpha0 + i) || Input.GetKeyDown(KeyCode.Keypad0 + i))
                 {

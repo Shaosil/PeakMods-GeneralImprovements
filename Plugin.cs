@@ -124,33 +124,6 @@ namespace PeakGeneralImprovements
             SkipPretitleScreen = Config.Bind(MenuSection, nameof(SkipPretitleScreen), false, "If set to true, pre-title (intro) screen will be skipped on startup.");
         }
 
-        /// <summary>
-        /// To be called one time after the game loads in order to handle achievements or other things that need late binding
-        /// </summary>
-        public static int CalculateQuickStartAscent()
-        {
-            if (AllowAirportLobbySkip.Value)
-            {
-                // Keep the ascent level to our maximum
-                int maxAscent = 0;
-                if (SteamManager.Initialized) SteamUserStats.GetStat("MaxAscent", out maxAscent);
-
-                if (int.TryParse(SkipAirportUsesAscent.Value, out var wantedAscent))
-                {
-                    SkipAirportUsesAscentNum = Mathf.Clamp(wantedAscent, -1, maxAscent);
-                    MLS.LogDebug($"{nameof(SkipAirportUsesAscent)} specified {wantedAscent} (current max {maxAscent}). Using {SkipAirportUsesAscentNum} for quick start.");
-                }
-                else
-                {
-                    MLS.LogDebug($"{nameof(SkipAirportUsesAscent)} not specified. Using current max ascent ({maxAscent}) for quick start.");
-                    SkipAirportUsesAscentNum = maxAscent;
-                }
-
-            }
-            
-            return SkipAirportUsesAscentNum;
-        }
-
         private void MigrateOldConfigValues()
         {
             try

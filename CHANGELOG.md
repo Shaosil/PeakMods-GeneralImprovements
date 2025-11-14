@@ -1,5 +1,8 @@
 # Changelog
 
+### v1.0.10 - Quick start hotfix
+* Fixed quick start menu number keys allowing you to specify an ascent that you haven't unlocked yet.
+
 ### v1.0.9 - More fixes and improvements
 * Fixed a few miscellaneous exceptions that were happening due to code being out of sync with game updates.
 * Fixed a bug where `SkipAirportUsesAscent` was not always working when specified.
